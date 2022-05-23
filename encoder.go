@@ -2,6 +2,7 @@ package lame
 
 /*
 #cgo LDFLAGS: -lmp3lame
+#cgo CFLAGS: -DHAVE_VORBIS
 #include <lame/lame.h>
 */
 import "C"
