@@ -1,7 +1,6 @@
 package lame
 
 /*
-#cgo LDFLAGS: -lmp3lame
 #include <stdlib.h>
 #include <lame/lame.h>
 */
@@ -87,8 +86,9 @@ func (e *Encoder) ID3TagSetComment(value string) {
 }
 
 // ID3TagSetTrack sets id3 track
-//  note that lame accepts a string and returns an error if
-//  track value is out of range
+//
+//	note that lame accepts a string and returns an error if
+//	track value is out of range
 func (e *Encoder) ID3TagSetTrack(value string) error {
 	cstr := C.CString(value)
 	defer C.free(unsafe.Pointer(cstr))
@@ -143,11 +143,12 @@ func (e *Encoder) ID3V2Tag() []byte {
 }
 
 // SetWriteID3TagAutomatic sets automatic write of id3 tag
-//   Normaly lame_init_param writes ID3v2 tags into the audio stream.
-//   Here in Encoder lame_init_param is launched on first write to encoder instance.
-//   Call SetWriteID3TagAutomatic(false) before writing to encoder
-//   to turn off this behaviour and get ID3v2 tag with above function
-//   write it yourself into your file.
+//
+//	Normaly lame_init_param writes ID3v2 tags into the audio stream.
+//	Here in Encoder lame_init_param is launched on first write to encoder instance.
+//	Call SetWriteID3TagAutomatic(false) before writing to encoder
+//	to turn off this behaviour and get ID3v2 tag with above function
+//	write it yourself into your file.
 func (e *Encoder) SetWriteID3TagAutomatic(auto bool) {
 	var value int
 	if auto {
@@ -163,15 +164,15 @@ func (e *Encoder) WriteID3TagAutomatic() bool {
 }
 
 // LameTagFrame returns the final LAME-tag frame
-//  * NOTE:
-//  * if VBR  tags are turned off by the user, or turned off by LAME,
-//  * this call does nothing and returns 0.
-//  * NOTE:
-//  * LAME inserted an empty frame in the beginning of mp3 audio data,
-//  * which you have to replace by the final LAME-tag frame after encoding.
-//  * In case there is no ID3v2 tag, usually this frame will be the very first
-//  * data in your mp3 file. If you put some other leading data into your
-//  * file, you'll have to do some bookkeeping about where to write this buffer.
+//   - NOTE:
+//   - if VBR  tags are turned off by the user, or turned off by LAME,
+//   - this call does nothing and returns 0.
+//   - NOTE:
+//   - LAME inserted an empty frame in the beginning of mp3 audio data,
+//   - which you have to replace by the final LAME-tag frame after encoding.
+//   - In case there is no ID3v2 tag, usually this frame will be the very first
+//   - data in your mp3 file. If you put some other leading data into your
+//   - file, you'll have to do some bookkeeping about where to write this buffer.
 func (e *Encoder) LameTagFrame() []byte {
 	buffer := make([]byte, tagBufferSizeInitial)
 	bptr := (*C.uchar)(&buffer[0])

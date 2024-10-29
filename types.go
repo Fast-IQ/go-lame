@@ -1,7 +1,6 @@
 package lame
 
 /*
-#cgo LDFLAGS: -lmp3lame
 #include <lame/lame.h>
 */
 import "C"
