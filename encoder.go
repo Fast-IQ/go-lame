@@ -204,6 +204,19 @@ func (e *Encoder) InSamplerate() int {
 	return int(C.lame_get_in_samplerate(e.lgf))
 }
 
+// SetOutSamplerate sets output sample rate in Hz
+//
+//	default is the same as input.
+func (e *Encoder) SetOutSamplerate(sampleRate int) error {
+	res := int(C.lame_set_out_samplerate(e.lgf, C.int(sampleRate)))
+	return convError(res)
+}
+
+// OutSamplerate returns current output sample rate configured
+func (e *Encoder) OutSamplerate() int {
+	return int(C.lame_get_out_samplerate(e.lgf))
+}
+
 // SetBrate sets one of brate compression ratio.
 //
 //	default is compression ratio of 11
@@ -380,7 +393,7 @@ func (e *Encoder) FlushNogap() (n int, err error) {
 	} else {
 		n = 0
 	}
-	e.output.Flush()
+	_ = e.output.Flush()
 	return
 }
 

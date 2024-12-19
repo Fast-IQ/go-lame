@@ -1,8 +1,8 @@
 package lame
 
 /*
-#cgo LDFLAGS: -libmp3lame
-#include <lame.h>
+#cgo LDFLAGS: -lmp3lame
+#include <lame/lame.h>
 */
 import "C"
 import "errors"
