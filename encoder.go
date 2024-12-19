@@ -2,7 +2,8 @@ package lame
 
 /*
 #cgo LDFLAGS: -lmp3lame
-#include </usr/include/lame/lame.h>
+#cgo CFLAGS: -DHAVE_VORBIS
+#include <lame/lame.h>
 */
 import "C"
 
@@ -203,6 +204,19 @@ func (e *Encoder) InSamplerate() int {
 	return int(C.lame_get_in_samplerate(e.lgf))
 }
 
+// SetOutSamplerate sets output sample rate in Hz
+//
+//	default is the same as input.
+func (e *Encoder) SetOutSamplerate(sampleRate int) error {
+	res := int(C.lame_set_out_samplerate(e.lgf, C.int(sampleRate)))
+	return convError(res)
+}
+
+// OutSamplerate returns current output sample rate configured
+func (e *Encoder) OutSamplerate() int {
+	return int(C.lame_get_out_samplerate(e.lgf))
+}
+
 // SetBrate sets one of brate compression ratio.
 //
 //	default is compression ratio of 11
@@ -278,7 +292,7 @@ func (e *Encoder) Write(p []byte) (int, error) {
 	bytesRemain := len(p) % blockAlignment
 	if bytesRemain > 0 {
 		e.inremainder = p[len(p)-bytesRemain:]
-		p = p[0 : len(p)-bytesRemain]
+		p = p[:len(p)-bytesRemain]
 	} else {
 		e.inremainder = nil
 	}
@@ -335,12 +349,38 @@ func (e *Encoder) Write(p []byte) (int, error) {
 	return inputDataSize, err
 }
 
-// Flush flushes the encoder buffer
+// Flush will flush the intenal PCM buffers, padding with
+// 0's to make sure the final frame is complete, and then flush
+// will also write id3v1 tags (if any) into the bitstream
 func (e *Encoder) Flush() (n int, err error) {
 	estimatedSize := 7200
 	o := make([]byte, estimatedSize)
 	co := (*C.uchar)(unsafe.Pointer(&o[0]))
 	bytesOut := C.int(C.lame_encode_flush(
+		e.lgf,
+		co,
+		C.int(estimatedSize),
+	))
+	if bytesOut < 0 {
+		n = 0
+		err = convError(n)
+	} else if bytesOut != 0 {
+		n, err = e.output.Write(o[:bytesOut])
+	} else {
+		n = 0
+	}
+	_ = e.output.Flush()
+	return
+}
+
+// FlushNogap will flush the internal mp3 buffers and pad
+// the last frame with ancillary data so it is a complete mp3 frame.
+// This routine will NOT write id3v1 tags into the bitstream.
+func (e *Encoder) FlushNogap() (n int, err error) {
+	estimatedSize := 7200
+	o := make([]byte, estimatedSize)
+	co := (*C.uchar)(unsafe.Pointer(&o[0]))
+	bytesOut := C.int(C.lame_encode_flush_nogap(
 		e.lgf,
 		co,
 		C.int(estimatedSize),
