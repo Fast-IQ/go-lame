@@ -2,7 +2,7 @@ package lame
 
 /*
 #cgo LDFLAGS: -lmp3lame
-#include <lame/lame.h>
+#include </usr/include/lame/lame.h>
 */
 import "C"
 
@@ -48,7 +48,8 @@ func (e *Encoder) SetVBR(mode VBRMode) error {
 }
 
 // SetVBRMeanBitrateKbps sets VBR mean bitrate
-//  Ignored unless VBRABR mode is used
+//
+//	Ignored unless VBRABR mode is used
 func (e *Encoder) SetVBRMeanBitrateKbps(kbps int) error {
 	res := int(C.lame_set_VBR_mean_bitrate_kbps(e.lgf, C.int(kbps)))
 	return convError(res)
@@ -72,7 +73,8 @@ func (e *Encoder) VBRMinBitrateKbps() int {
 }
 
 // SetVBRMaxBitrateKbps sets max bitrate
-//  Ignored unless VBRABR mode is used
+//
+//	Ignored unless VBRABR mode is used
 func (e *Encoder) SetVBRMaxBitrateKbps(kbps int) error {
 	res := int(C.lame_set_VBR_max_bitrate_kbps(e.lgf, C.int(kbps)))
 	return convError(res)
@@ -84,7 +86,8 @@ func (e *Encoder) VBRMaxBitrateKbps() int {
 }
 
 // SetVBRHardMin when enforce==true, strictly enforces min bitrate
-//  Normally it will be violated for analog silence
+//
+//	Normally it will be violated for analog silence
 func (e *Encoder) SetVBRHardMin(enforce bool) error {
 	var value int
 	if enforce {
@@ -106,9 +109,10 @@ func (e *Encoder) SetVBRQuality(quality float64) error {
 }
 
 // SetLowPassFrequency applies lowpass filtering to frequency in Hz
-//  0 - lame chooses
-//  -1 - disable lowpass
-//  default is 0
+//
+//	0 - lame chooses
+//	-1 - disable lowpass
+//	default is 0
 func (e *Encoder) SetLowPassFrequency(frequency int) error {
 	res := int(C.lame_set_lowpassfreq(e.lgf, C.int(frequency)))
 	return convError(res)
@@ -120,7 +124,8 @@ func (e *Encoder) LowPassFrequency() int {
 }
 
 // SetLowPassWidth sets the width of transition band in Hz
-//  default = one polyphase filter band
+//
+//	default = one polyphase filter band
 func (e *Encoder) SetLowPassWidth(frequency int) error {
 	res := int(C.lame_set_lowpasswidth(e.lgf, C.int(frequency)))
 	return convError(res)
@@ -132,9 +137,10 @@ func (e *Encoder) LowPassWidth() int {
 }
 
 // SetHighPassFrequency applies lowpass filtering to frequency in Hz
-//  0 - lame chooses
-//  -1 - disable lowpass
-//  default is 0
+//
+//	0 - lame chooses
+//	-1 - disable lowpass
+//	default is 0
 func (e *Encoder) SetHighPassFrequency(frequency int) error {
 	res := int(C.lame_set_highpassfreq(e.lgf, C.int(frequency)))
 	return convError(res)
@@ -146,7 +152,8 @@ func (e *Encoder) HighPassFrequency() int {
 }
 
 // SetHighPassWidth sets the width of transition band in Hz
-//  default = one polyphase filter band
+//
+//	default = one polyphase filter band
 func (e *Encoder) SetHighPassWidth(frequency int) error {
 	res := int(C.lame_set_highpasswidth(e.lgf, C.int(frequency)))
 	return convError(res)
@@ -158,7 +165,8 @@ func (e *Encoder) HighPassWidth() int {
 }
 
 // SetNumChannels sets number of channels in input stream
-//  default is 2
+//
+//	default is 2
 func (e *Encoder) SetNumChannels(num int) error {
 	res := int(C.lame_set_num_channels(e.lgf, C.int(num)))
 	return convError(res)
@@ -170,7 +178,8 @@ func (e *Encoder) NumChannels() int {
 }
 
 // SetNumSamples sets number of samples.
-//  default = 2^32-1
+//
+//	default = 2^32-1
 func (e *Encoder) SetNumSamples(numSamples uint32) error {
 	res := int(C.lame_set_num_samples(e.lgf, C.ulong(numSamples)))
 	return convError(res)
@@ -182,7 +191,8 @@ func (e *Encoder) NumSamples() uint32 {
 }
 
 // SetInSamplerate sets input sample rate in Hz
-//  default is 44100
+//
+//	default is 44100
 func (e *Encoder) SetInSamplerate(sampleRate int) error {
 	res := int(C.lame_set_in_samplerate(e.lgf, C.int(sampleRate)))
 	return convError(res)
@@ -194,7 +204,8 @@ func (e *Encoder) InSamplerate() int {
 }
 
 // SetBrate sets one of brate compression ratio.
-//  default is compression ratio of 11
+//
+//	default is compression ratio of 11
 func (e *Encoder) SetBrate(brate int) error {
 	res := int(C.lame_set_brate(e.lgf, C.int(brate)))
 	return convError(res)
@@ -206,20 +217,22 @@ func (e *Encoder) Brate() int {
 }
 
 // SetMode sets output audio mode
-//  mode = 0,1,2,3 = stereo, jstereo, dual channel (not supported), mono
-//  default: lame picks based on compression ration and input channels
+//
+//	mode = 0,1,2,3 = stereo, jstereo, dual channel (not supported), mono
+//	default: lame picks based on compression ration and input channels
 func (e *Encoder) SetMode(mode MpegMode) error {
 	res := int(C.lame_set_mode(e.lgf, C.MPEG_mode(mode)))
 	return convError(res)
 }
 
 // SetQuality chooses internal algorithm selection.
-//  True quality is determined by the bitrate
-//  but this variable will effect quality by selecting expensive or cheap algorithms.
-//  quality=0..9.  0=best (very slow).  9=worst.
-//  recommended:  2     near-best quality, not too slow
-//                5     good quality, fast
-//                7     ok quality, really fast
+//
+//	True quality is determined by the bitrate
+//	but this variable will affect quality by selecting expensive or cheap algorithms.
+//	quality=0..9.  0=best (very slow).  9=worst.
+//	recommended:  2     near-best quality, not too slow
+//	              5     good quality, fast
+//	              7     ok quality, really fast
 func (e *Encoder) SetQuality(quality int) error {
 	res := int(C.lame_set_quality(e.lgf, C.int(quality)))
 	return convError(res)
@@ -250,7 +263,7 @@ func (e *Encoder) Write(p []byte) (int, error) {
 	inputDataSize := len(p)
 
 	if !e.initialized {
-		e.initParams()
+		_ = e.initParams()
 	}
 
 	if e.inremainder != nil {
@@ -264,7 +277,7 @@ func (e *Encoder) Write(p []byte) (int, error) {
 	blockAlignment := bitDepth / 8 * e.NumChannels() // 2 bytes per channel
 	bytesRemain := len(p) % blockAlignment
 	if bytesRemain > 0 {
-		e.inremainder = p[len(p)-bytesRemain : len(p)]
+		e.inremainder = p[len(p)-bytesRemain:]
 		p = p[0 : len(p)-bytesRemain]
 	} else {
 		e.inremainder = nil
@@ -273,7 +286,7 @@ func (e *Encoder) Write(p []byte) (int, error) {
 	//
 	// From lame.h:
 	// The required mp3buf_size can be computed from num_samples,
-	// samplerate and encoding rate, but here is a worst case estimate:
+	// samplerate and encoding rate, but here is the worst case estimate:
 	//
 	// mp3buf_size in bytes = 1.25*num_samples + 7200
 	//
@@ -340,7 +353,7 @@ func (e *Encoder) Flush() (n int, err error) {
 	} else {
 		n = 0
 	}
-	e.output.Flush()
+	_ = e.output.Flush()
 	return
 }
 
@@ -350,7 +363,7 @@ func (e *Encoder) Close() {
 	if e.closed {
 		return
 	}
-	e.Flush()
+	_, _ = e.Flush()
 	C.lame_close(e.lgf)
 	e.closed = true
 }

@@ -1,7 +1,7 @@
 package lame
 
 import (
-	"io/ioutil"
+	"io"
 	"reflect"
 	"runtime"
 	"testing"
@@ -37,7 +37,7 @@ func TestSetGetConfigurationValues(t *testing.T) {
 	var err error
 	// a general test which checks the connection between go code
 	// and underlying lame_global_flags structure
-	w := ioutil.Discard
+	w := io.Discard
 	enc := NewEncoder(w)
 	intSetGet(enc.SetNumChannels, enc.NumChannels, 1, t)
 	intSetGet(enc.SetInSamplerate, enc.InSamplerate, 22050, t)
@@ -73,16 +73,16 @@ func TestSetGetConfigurationValues(t *testing.T) {
 func TestEncoder(t *testing.T) {
 	c := new(counter)
 	enc := NewEncoder(c)
-	enc.SetNumChannels(1)
-	enc.SetQuality(9)
-	enc.SetBrate(1)
+	_ = enc.SetNumChannels(1)
+	_ = enc.SetQuality(9)
+	_ = enc.SetBrate(1)
 
 	input := make([]byte, 8192)
 	for i := 0; i < 8192; i++ {
 		input[i] = byte(i)
 	}
 
-	enc.Write(input)
+	_, _ = enc.Write(input)
 	enc.Close()
 
 	if c.cnt == 0 {

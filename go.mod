@@ -1,3 +1,3 @@
-module github.com/viert/go-lame
+module github.com/Fast-IQ/go-lame
 
-go 1.12
+go 1.21.3

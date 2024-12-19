@@ -1,12 +1,12 @@
 package lame
 
 import (
-	"io/ioutil"
+	"io"
 	"testing"
 )
 
 func TestID3V1(t *testing.T) {
-	w := ioutil.Discard
+	w := io.Discard
 	enc := NewEncoder(w)
 
 	enc.ID3TagSetTitle("Super Song")
@@ -17,7 +17,7 @@ func TestID3V1(t *testing.T) {
 }
 
 func TestID3V2(t *testing.T) {
-	w := ioutil.Discard
+	w := io.Discard
 	enc := NewEncoder(w)
 
 	enc.ID3TagAddV2()
@@ -29,7 +29,7 @@ func TestID3V2(t *testing.T) {
 	if string(data[10:14]) != "TIT2" {
 		t.Error("TIT2 marker not found")
 	}
-	if string(data[len(data)-10:len(data)]) != "Super Song" {
+	if string(data[len(data)-10:]) != "Super Song" {
 		t.Error("Song name not found")
 	}
 }

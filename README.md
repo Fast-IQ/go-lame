@@ -1,6 +1,6 @@
-# go-lame
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/Fast-IQ/go-lame)](https://pkg.go.dev/github.com/Fast-IQ/go-lame)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Fast-IQ/go-lame)](https://goreportcard.com/report/github.com/Fast-IQ/go-lame)
 
-A new generation lamemp3 Go bindings to replace legacy https://github.com/viert/lame
 
 ## What's new
 
@@ -17,7 +17,7 @@ import (
 	"bufio"
 	"os"
 
-    "github.com/viert/go-lame"
+    "github.com/Fast-IQ/go-lame"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer of.Close()
+	defer func() { _ = of.Close()}()
 	enc := lame.NewEncoder(of)
 	defer enc.Close()
 
@@ -33,9 +33,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer inf.Close()
+	defer func() { _ = inf.Close()}()
 
 	r := bufio.NewReader(inf)
-	r.WriteTo(enc)
+	_, _ = r.WriteTo(enc)
 }
 ```

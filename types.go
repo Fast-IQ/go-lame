@@ -2,9 +2,10 @@ package lame
 
 /*
 #cgo LDFLAGS: -lmp3lame
-#include <lame/lame.h>
+#include </usr/include/lame/lame.h>
 */
 import "C"
+import "errors"
 
 type lameglobal *C.lame_global_flags
 
@@ -20,7 +21,7 @@ type MpegMode int
 const (
 	MpegStereo       MpegMode = C.STEREO
 	MpegJointStereo  MpegMode = C.JOINT_STEREO
-	MpegDualChannel  MpegMode = C.DUAL_CHANNEL /* LAME doesn't supports this! */
+	MpegDualChannel  MpegMode = C.DUAL_CHANNEL /* LAME doesn't support this! */
 	MpegMono         MpegMode = C.MONO
 	MpegNotSet       MpegMode = C.NOT_SET
 	MpegMaxIndicator MpegMode = C.MAX_INDICATOR /* Don't use this! It's used for sanity checks. */
@@ -102,14 +103,14 @@ const (
 )
 
 func (e Error) Error() string {
-	switch e {
-	case ErrorBufferTooSmall:
+	switch {
+	case errors.Is(e, ErrorBufferTooSmall):
 		return "buffer too small"
-	case ErrorMalloc:
+	case errors.Is(e, ErrorMalloc):
 		return "error allocating memory"
-	case ErrorParamsNotInitialized:
+	case errors.Is(e, ErrorParamsNotInitialized):
 		return "lame_init_params not called"
-	case ErrorPsychoAcousticProblems:
+	case errors.Is(e, ErrorPsychoAcousticProblems):
 		return "psycho acoustic problems"
 	default:
 		return "unknown error"
